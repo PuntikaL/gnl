@@ -6,16 +6,11 @@
 /*   By: pleepago <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 12:07:08 by pleepago          #+#    #+#             */
-/*   Updated: 2023/01/28 15:55:21 by pleepago         ###   ########.fr       */
+/*   Updated: 2023/01/28 17:31:36 by pleepago         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef BUFFER_SIZE
-# define BUFFER_SIZE 17
-#endif
-#include<stdio.h>
-#include<unistd.h>
-#include<stdlib.h>
+#include "get_next_line.h"
 
 char	*get_out(char *start, char *ret)
 {
@@ -26,23 +21,17 @@ char	*get_out(char *start, char *ret)
 	tmp = malloc(ret - start + 1);
 	ft_memcpy(tmp, start, ret - start + 1);
 	tmp[ret - start + 1] = '\0';
-	//printf("%s", tmp);
 	return (tmp);
 }
-/// @brief cut the left words and connect to static str
-/// @param buff 
-/// @param str 
-/// @return 
-char	*check_new_line(char *buff, char *str)
+
+char	*check_new_line(char *str)
 {
 	char	*ptr;
 	char	*tmp;
 
-	//str = ft_strjoin(str, buff);
 	ptr = (ft_strchr(str, '\n'));
 	if (ptr != NULL)
 	{
-		//get_out(str,ptr);
 	 	if (ptr++ !=  NULL)
 	 	{
 	 		str = malloc(1);
@@ -63,8 +52,9 @@ char	*get_next_line(int fd)
 	char	*res;
 	char	*tmp;
 	
+	res = NULL;
 	read_status = 1;
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
 		return (NULL);
 	buff = malloc((BUFFER_SIZE + 1));
 	buff[BUFFER_SIZE] = '\0';
@@ -83,21 +73,18 @@ char	*get_next_line(int fd)
 		{
 			tmp = str;
 			str = ft_strjoin(str, buff);
-			free(tmp);
+			if (tmp)
+				free(tmp);
 		}
-	// printf("str 3 = %s\n",str);
 		ptr = (ft_strchr(str, '\n'));
 		if (ptr != NULL)
 		{
 			res =  get_out(str,ptr);
 			tmp = str;
-			str = check_new_line(buff, str);
+			str = check_new_line(str);
 			free(tmp);
 			break;
 		}
-		// if (buff[BUFFER_SIZE - 1] == '\0' && !ft_strchr(str, '\n'))
-		// 	return (get_out(str, str+BUFFER_SIZE - 1));
-	//printf("str 4 = %s\n",str);
 		if (read_status < BUFFER_SIZE)
 		{
 			ptr = ft_strchr(str, '\0');
@@ -105,6 +92,7 @@ char	*get_next_line(int fd)
 			if (*res == '\0')
 			{
 				free(str);
+				str = NULL;
 				free(res);
 				free(buff);
 				return (NULL);
@@ -117,3 +105,15 @@ char	*get_next_line(int fd)
 	free(buff);
 	return (res);
 }
+
+// # include <fcntl.h>
+// # include <stdio.h>
+
+// int	main(void)
+// {
+// 	int fd;
+	
+// 	fd = open("gnlTester/files/empty", O_RDWR);
+// 	printf("%s", get_next_line(fd));
+// 	printf("%s", get_next_line(fd));
+// }

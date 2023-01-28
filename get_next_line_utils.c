@@ -6,13 +6,11 @@
 /*   By: pleepago <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 12:15:58 by pleepago          #+#    #+#             */
-/*   Updated: 2023/01/27 16:20:43 by pleepago         ###   ########.fr       */
+/*   Updated: 2023/01/28 16:57:52 by pleepago         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include<stdlib.h>
-#include<unistd.h>
+#include "get_next_line.h"
 
 int	ft_strlen(const char *str)
 {
