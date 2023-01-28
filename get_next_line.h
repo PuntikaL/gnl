@@ -6,7 +6,7 @@
 /*   By: pleepago <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/28 16:52:11 by pleepago          #+#    #+#             */
-/*   Updated: 2023/01/28 16:57:16 by pleepago         ###   ########.fr       */
+/*   Updated: 2023/01/28 21:52:47 by pleepago         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,5 +29,9 @@ int	ft_strlen(const char *str);
 void	*ft_memcpy(void *dst, const void *src, size_t n);
 char	*ft_strjoin(char const *s1, char const *s2);
 char	*ft_strchr(const char *s, int c);
+int	clone(char *ptr, char *res, char *str, char *buff);
+int	found_nl(char **str, char **res);
+void	check_first(char **str, char *buff);
+void	last_line(char **ptr, char **res, char **str);
 
 # endif

@@ -6,17 +6,18 @@
 /*   By: pleepago <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 12:07:08 by pleepago          #+#    #+#             */
-/*   Updated: 2023/01/28 17:31:36 by pleepago         ###   ########.fr       */
+/*   Updated: 2023/01/28 21:52:14 by pleepago         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#include <stdio.h>
 
 char	*get_out(char *start, char *ret)
 {
 	char	*tmp;
 	
-	if(start == NULL || ret == NULL)
+	if(start == NULL || ret == NULL || start == ret)
 		return (NULL);
 	tmp = malloc(ret - start + 1);
 	ft_memcpy(tmp, start, ret - start + 1);
@@ -43,77 +44,61 @@ char	*check_new_line(char *str)
 	return (str);
 }
 
+int	found_nl(char **str, char **res)
+{
+	char	*ptr;
+	char	*tmp;
+
+	ptr = ft_strchr(*str, '\n');
+	if (ptr != NULL)
+	{
+		*res = get_out(*str,ptr);
+		*str = check_new_line(*str);
+		return (1);
+	}
+	return (0);
+}
+
+void	check_first(char **str, char *buff)
+{
+	char	*tmp;
+
+	tmp = *str;
+	if (*str == NULL)
+	{
+		*str = malloc(1);
+		*str = ft_strjoin("", buff);
+	}
+	else
+		*str = ft_strjoin(*str, buff);
+	free(tmp);
+}
+
 char	*get_next_line(int fd)
 {
-	int	read_status;
-	char	*buff;
 	static char	*str;
+	int	read_status;
 	char	*ptr;
 	char	*res;
-	char	*tmp;
+	char	*buff;
 	
-	res = NULL;
 	read_status = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
 		return (NULL);
-	buff = malloc((BUFFER_SIZE + 1));
+	buff = malloc(BUFFER_SIZE + 1);
 	buff[BUFFER_SIZE] = '\0';
-	while((read_status) > 0)
+	while (read_status > 0)
 	{
 		read_status = read(fd, buff, BUFFER_SIZE);
-		buff[read_status]='\0';
-		if(str == NULL)
-		{
-			str = malloc(1);
-			tmp = str;
-			str = ft_strjoin("", buff);
-			free(tmp);
-		}
-		else
-		{
-			tmp = str;
-			str = ft_strjoin(str, buff);
-			if (tmp)
-				free(tmp);
-		}
-		ptr = (ft_strchr(str, '\n'));
-		if (ptr != NULL)
-		{
-			res =  get_out(str,ptr);
-			tmp = str;
-			str = check_new_line(str);
-			free(tmp);
+		buff[read_status] = '\0';
+		check_first(&str, buff);
+		if(found_nl(&str, &res))
 			break;
-		}
 		if (read_status < BUFFER_SIZE)
 		{
-			ptr = ft_strchr(str, '\0');
-			res =  get_out(str,ptr);
-			if (*res == '\0')
-			{
-				free(str);
-				str = NULL;
-				free(res);
-				free(buff);
-				return (NULL);
-			}
-			free(str);
-			str = NULL;
+			last_line (&ptr, &res, &str);
 			break;
 		}
 	}
-	free(buff);
-	return (res);
+	return (free(buff), res);
 }
-
-// # include <fcntl.h>
-// # include <stdio.h>
-
-// int	main(void)
-// {
-// 	int fd;
-	
-// 	fd = open("gnlTester/files/empty", O_RDWR);
-// 	printf("%s", get_next_line(fd));
-// 	printf("%s", get_next_line(fd));
-// }
