@@ -6,7 +6,7 @@
 /*   By: pleepago <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 12:15:58 by pleepago          #+#    #+#             */
-/*   Updated: 2023/01/28 21:52:52 by pleepago         ###   ########.fr       */
+/*   Updated: 2023/01/29 10:11:35 by pleepago         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,8 +89,11 @@ void	last_line(char **ptr, char **res, char **str)
 {
 	*ptr = ft_strchr(*str, '\0');
 	*res = get_out(*str, *ptr);
+	if (str)
+	{
+		free(*str);
+		*str = NULL;
+	}
 	if (!*res)
 		return ;
-	free(*str);
-	*str = NULL;
 }

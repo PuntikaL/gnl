@@ -6,7 +6,7 @@
 /*   By: pleepago <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 12:07:08 by pleepago          #+#    #+#             */
-/*   Updated: 2023/01/28 21:52:14 by pleepago         ###   ########.fr       */
+/*   Updated: 2023/01/29 10:11:02 by pleepago         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,8 +16,9 @@
 char	*get_out(char *start, char *ret)
 {
 	char	*tmp;
-	
-	if(start == NULL || ret == NULL || start == ret)
+
+	if ((start == NULL || ret == NULL || start == ret) \
+		&& (*start != '\n'))
 		return (NULL);
 	tmp = malloc(ret - start + 1);
 	ft_memcpy(tmp, start, ret - start + 1);
@@ -33,13 +34,14 @@ char	*check_new_line(char *str)
 	ptr = (ft_strchr(str, '\n'));
 	if (ptr != NULL)
 	{
-	 	if (ptr++ !=  NULL)
-	 	{
-	 		str = malloc(1);
+		if (ptr++ != NULL)
+		{
+			str = malloc(1);
 			tmp = str;
-	 		str = ft_strjoin(ptr, "");
-			free(tmp);
-	 	}
+			str = ft_strjoin(ptr, "");
+			if (tmp)
+				free(tmp);
+		}
 	}
 	return (str);
 }
@@ -52,8 +54,11 @@ int	found_nl(char **str, char **res)
 	ptr = ft_strchr(*str, '\n');
 	if (ptr != NULL)
 	{
-		*res = get_out(*str,ptr);
+		*res = get_out(*str, ptr);
+		tmp = *str;
 		*str = check_new_line(*str);
+		if (tmp)
+			free(tmp);
 		return (1);
 	}
 	return (0);
@@ -63,41 +68,46 @@ void	check_first(char **str, char *buff)
 {
 	char	*tmp;
 
-	tmp = *str;
 	if (*str == NULL)
 	{
 		*str = malloc(1);
+		tmp = *str;
 		*str = ft_strjoin("", buff);
+		if (tmp)
+			free(tmp);
 	}
 	else
+	{
+		tmp = *str;
 		*str = ft_strjoin(*str, buff);
-	free(tmp);
+		if (tmp)
+			free(tmp);
+	}
 }
 
 char	*get_next_line(int fd)
 {
 	static char	*str;
-	int	read_status;
-	char	*ptr;
-	char	*res;
-	char	*buff;
-	
+	int			read_status;
+	char		*res;
+	char		*buff;
+	char		*ptr;
+
 	read_status = 1;
 	if (fd < 0 || BUFFER_SIZE <= 0 || read(fd, NULL, 0) < 0)
 		return (NULL);
 	buff = malloc(BUFFER_SIZE + 1);
-	buff[BUFFER_SIZE] = '\0';
 	while (read_status > 0)
 	{
 		read_status = read(fd, buff, BUFFER_SIZE);
 		buff[read_status] = '\0';
 		check_first(&str, buff);
-		if(found_nl(&str, &res))
-			break;
+		if (found_nl(&str, &res))
+			break ;
 		if (read_status < BUFFER_SIZE)
 		{
 			last_line (&ptr, &res, &str);
-			break;
+			break ;
 		}
 	}
 	return (free(buff), res);
