@@ -6,7 +6,7 @@
 /*   By: pleepago <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/27 12:07:08 by pleepago          #+#    #+#             */
-/*   Updated: 2023/01/29 10:11:02 by pleepago         ###   ########.fr       */
+/*   Updated: 2023/01/29 10:43:44 by pleepago         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ char	*get_out(char *start, char *ret)
 	if ((start == NULL || ret == NULL || start == ret) \
 		&& (*start != '\n'))
 		return (NULL);
-	tmp = malloc(ret - start + 1);
+	tmp = malloc(ret - start + 2);
 	ft_memcpy(tmp, start, ret - start + 1);
 	tmp[ret - start + 1] = '\0';
 	return (tmp);
